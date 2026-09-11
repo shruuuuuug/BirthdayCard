@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- ============================================================
+     EVERYTHING YOU NEED TO CHANGE IS MARKED WITH {{ DOUBLE BRACES }}
+     Press Ctrl+F (Cmd+F on Mac) and search for   {{   to find them all.
+     ============================================================ -->
+
+<title>Happy Birthday, Gracie</title>
+<meta name="description" content="A book for her birthday.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>%F0%9F%A6%95</text></svg>">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,200..800&family=Newsreader:ital,opsz,wght@0,6..72,200..700;1,6..72,200..700&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================================
+   1. TOKENS
+   ============================================================ */
+:root{
+  --ridge-far:#4A3060; --ridge-mid:#241834; --ridge-near:#1B1526;
+  --dino-far:#5C3F70;  --dino-mid:#34234C; --dino-near:#07050C;
+
+  --night:#0A0A16;
+  --paper:#F3E7CD;
+  --ink:#2A2117;
+  --ink-soft:#6E5B43;
+  --bone:#E8DDC8;
+  --bone-dim:#A2957F;
+  --gold:#E9C489;
+  --cover:#241A33;
+
+  /* page size — width first, height derived from it */
+  --pw:min(92vw, 25rem);
+  --ph:min(calc(var(--pw) * 1.62), 78svh);
+  --turn:900ms;
+}
+@media (min-width:760px){
+  :root{
+    --pw:min(28rem, 40vw, 54svh);
+    --ph:calc(var(--pw) * 1.34);
+  }
+}
+
+/* ============================================================
+   2. BASE
+   ============================================================ */
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;overflow:hidden}
+body{
+  margin:0;
+  min-height:100svh;
+  background:
+    radial-gradient(1.6px 1.6px at 11% 13%, rgba(255,241,216,.9), transparent),
+    radial-gradient(1.2px 1.2px at 24% 27%, rgba(255,241,216,.55), transparent),
+    radial-gradient(1.8px 1.8px at 33% 8%,  rgba(255,241,216,.8), transparent),
+    radial-gradient(1.1px 1.1px at 44% 21%, rgba(255,241,216,.5), transparent),
+    radial-gradient(1.5px 1.5px at 56% 11%, rgba(255,241,216,.75), transparent),
+    radial-gradient(1.3px 1.3px at 63% 31%, rgba(255,241,216,.45), transparent),
+    radial-gradient(1.7px 1.7px at 72% 6%,  rgba(255,241,216,.8), transparent),
+    radial-gradient(1.2px 1.2px at 81% 24%, rgba(255,241,216,.55), transparent),
+    radial-gradient(1.5px 1.5px at 91% 15%, rgba(255,241,216,.7), transparent),
+    radial-gradient(1.1px 1.1px at 17% 38%, rgba(255,241,216,.4), transparent),
+    radial-gradient(1.2px 1.2px at 49% 41%, rgba(255,241,216,.35), transparent),
+    radial-gradient(1.3px 1.3px at 86% 39%, rgba(255,241,216,.4), transparent),
+    #0C1230;
+  color:var(--bone);
+  font-family:"Newsreader",Georgia,"Times New Roman",serif;
+  line-height:1.7;
+  overflow:hidden;
+}
+img{max-width:100%;display:block}
+h1,h2{margin:0;font-family:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;line-height:1.03}
+p{margin:0 0 1.05em}
+:focus-visible{outline:3px solid var(--gold);outline-offset:3px;border-radius:4px}
+
+/* ============================================================
+   3. LANDSCAPE BEHIND THE BOOK
+   ============================================================ */
+.backdrop{position:fixed;inset:0;z-index:0;pointer-events:none}
+.scene{position:absolute;left:0;right:0;bottom:0;width:100%;height:auto}
+.scrim{
+  position:fixed;inset:0;z-index:1;pointer-events:none;
+  background:radial-gradient(ellipse 70% 60% at 50% 48%, rgba(6,5,16,.62), rgba(6,5,16,.12) 78%);
+}
+
+.walk{animation:walk var(--cross,40s) linear infinite}
+@keyframes walk{from{transform:translateX(0)}to{transform:translateX(var(--dist,2000px))}}
+.lumber{transform-box:fill-box;transform-origin:50% 100%;animation:lumber var(--gait,2.4s) ease-in-out infinite}
+@keyframes lumber{
+  0%,100%{transform:translateY(0) rotate(-.55deg)}
+  50%{transform:translateY(-2.5px) rotate(.55deg)}
+}
+.star{animation:twinkle var(--t,4s) ease-in-out var(--td,0s) infinite}
+@keyframes twinkle{0%,100%{opacity:.25}50%{opacity:1}}
+.cloud{animation:cloud 90s linear infinite}
+@keyframes cloud{from{transform:translateX(-140px)}to{transform:translateX(1340px)}}
+.frond{transform-box:fill-box;transform-origin:bottom center;animation:sway 7s ease-in-out var(--sd,0s) infinite}
+@keyframes sway{0%,100%{transform:rotate(-1.6deg)}50%{transform:rotate(1.6deg)}}
+
+/* ============================================================
+   4. THE BOOK
+   ============================================================ */
+.stage{
+  position:relative;z-index:2;
+  min-height:100svh;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  gap:clamp(1rem,3vh,1.9rem);
+  padding:clamp(1rem,3vh,2rem) 1rem;
+}
+.deck{
+  display:flex;flex-direction:column;align-items:center;
+  gap:clamp(.9rem,2.5vh,1.6rem);
+}
+@media (min-width:760px){
+  .stage.open .book{transform:translateX(calc(var(--pw) / 2))}
+}
+
+.book{
+  position:relative;
+  width:var(--pw);
+  height:var(--ph);
+  perspective:2200px;
+  cursor:pointer;
+  transition:transform var(--turn) cubic-bezier(.42,.05,.25,1);
+  /* the edges of the pages still to come, stacked to the right */
+  box-shadow:
+     4px 0 0 -1px rgba(243,231,205,.55),
+     8px 0 0 -2px rgba(243,231,205,.4),
+    12px 0 0 -3px rgba(243,231,205,.25),
+    0 40px 70px -22px rgba(0,0,0,.85);
+}
+
+.leaf{
+  position:absolute;inset:0;
+  transform-origin:left center;
+  transform-style:preserve-3d;
+  transition:transform var(--turn) cubic-bezier(.42,.05,.25,1);
+}
+.leaf.turned{transform:rotateY(-180deg)}
+
+.face{
+  position:absolute;inset:0;
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+  overflow:hidden;
+  background-image:
+    radial-gradient(120% 80% at 12% 4%, rgba(255,255,255,.55), transparent 58%),
+    linear-gradient(180deg,#F6EDD9,#E7D7B6);
+  color:var(--ink);
+  font-size:clamp(.92rem, calc(var(--pw) * .042), 1.12rem);
+}
+.face.front{box-shadow:inset 15px 0 26px -16px rgba(58,40,14,.75)}
+.face.back{
+  transform:rotateY(180deg);
+  box-shadow:inset -15px 0 26px -16px rgba(58,40,14,.75);
+  background-image:
+    radial-gradient(120% 80% at 88% 4%, rgba(255,255,255,.42), transparent 58%),
+    linear-gradient(180deg,#EFE4CB,#DFCFAC);
+}
+
+.pad{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;
+  padding:clamp(1.3rem,6.5%,2.6rem) clamp(1.3rem,7.5%,2.8rem) clamp(2.4rem,9%,3.2rem);
+  overflow-y:auto;
+  overscroll-behavior:contain;
+}
+.pad::-webkit-scrollbar{width:5px}
+.pad::-webkit-scrollbar-thumb{background:rgba(110,91,67,.3);border-radius:4px}
+
+.folio{
+  position:absolute;left:0;right:0;bottom:clamp(.7rem,4%,1.3rem);
+  text-align:center;
+  font-size:.75em;
+  letter-spacing:.14em;
+  color:var(--ink-soft);
+  opacity:.75;
+}
+
+/* ---- cover ---- */
+.face.cover{
+  background-image:
+    radial-gradient(130% 90% at 20% 0%, #35264A, transparent 62%),
+    linear-gradient(165deg,#2A1E3C,#171024);
+  color:var(--gold);
+  box-shadow:inset 15px 0 30px -16px rgba(0,0,0,.9);
+}
+.cover .pad{justify-content:center;text-align:center;align-items:center}
+.cover::after{
+  content:"";position:absolute;
+  inset:clamp(.7rem,4%,1.2rem);
+  border:1px solid rgba(233,196,137,.34);
+  pointer-events:none;
+}
+.crest{width:clamp(160px,66%,270px);margin-bottom:clamp(1rem,5%,1.9rem);filter:drop-shadow(0 10px 18px rgba(0,0,0,.5))}
+.kicker{
+  font-style:italic;
+  font-size:1.05em;
+  letter-spacing:.02em;
+  color:rgba(240,222,193,.9);
+  margin-bottom:.35em;
+}
+.cover-name{
+  font-size:clamp(2rem, calc(var(--pw) * .155), 3.6rem);
+  font-variation-settings:"opsz" 72,"wdth" 92,"wght" 700;
+  letter-spacing:-.03em;
+  color:#F7E7C9;
+  margin-bottom:.5rem;
+}
+.cover-sub{
+  color:rgba(233,196,137,.8);
+  font-size:.95em;
+  margin:0;
+  max-width:22ch;
+}
+.turn-hint{
+  position:absolute;left:0;right:0;bottom:clamp(1.7rem,8%,2.6rem);
+  margin:0;
+  text-align:center;
+  font-size:.82em;
+  letter-spacing:.12em;
+  color:rgba(233,196,137,.6);
+  animation:pulse 3.4s ease-in-out infinite;
+}
+@keyframes pulse{0%,100%{opacity:.45}50%{opacity:1}}
+
+/* ---- letter ---- */
+.salutation{
+  font-size:1.42em;
+  line-height:1.25;
+  margin-bottom:.85em;
+  font-variation-settings:"opsz" 40,"wght" 500;
+}
+.prose p{max-width:36ch}
+.signoff{margin-top:1.6em;margin-bottom:0;font-style:italic;font-size:1.08em}
+.rule{display:block;width:84px;height:8px;margin:.6em 0 0;overflow:visible}
+.rule path{fill:none;stroke:var(--ink-soft);stroke-width:2.2;stroke-linecap:round}
+
+/* ---- photo pages ---- */
+.photo-page{justify-content:center;align-items:center;gap:clamp(.7rem,3%,1.15rem);padding-bottom:clamp(2.8rem,11%,3.6rem)}
+.mount{
+  display:inline-flex;
+  max-width:100%;
+  background:#FBF5E7;
+  padding:9px;
+  box-shadow:0 12px 26px -14px rgba(58,40,14,.8);
+}
+.shot{
+  position:relative;
+  height:calc(var(--ph) * .58);
+  aspect-ratio:4/5;
+  width:auto;
+  max-width:100%;
+  background:#DFD2B4;
+  overflow:hidden;
+}
+.shot img{width:100%;height:100%;object-fit:cover}
+.hint{
+  position:absolute;inset:0;
+  display:none;
+  flex-direction:column;align-items:center;justify-content:center;
+  gap:.5rem;text-align:center;padding:1rem;
+  color:#8A7B5E;
+  background:repeating-linear-gradient(45deg,#E4D8BA 0 10px,#DFD2B4 10px 20px);
+  font-size:.8em;line-height:1.5;
+}
+.is-empty .hint{display:flex}
+.hint code{font-family:ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;font-size:.95em;color:#5F5138}
+.hint svg{width:26px;height:26px;fill:#A2957F}
+.caption{
+  margin:0;
+  flex:0 0 auto;
+  text-align:center;
+  font-style:italic;
+  color:var(--ink-soft);
+  font-size:.94em;
+}
+
+/* ---- closing page ---- */
+.closing{justify-content:center;align-items:center;text-align:center}
+.closing .doodle{width:clamp(150px,72%,250px);transform:scaleX(-1);margin-bottom:clamp(1rem,5%,1.7rem)}
+.last-line{font-size:1.18em;font-style:italic;max-width:24ch;line-height:1.5}
+.closing .signoff{margin-top:1.4em;font-size:1.05em}
+
+/* ============================================================
+   5. CONTROLS
+   ============================================================ */
+.controls{
+  display:flex;align-items:center;gap:1.1rem;
+  color:var(--bone-dim);
+}
+.controls button{
+  width:2.9rem;height:2.9rem;
+  border-radius:50%;
+  border:1px solid rgba(233,196,137,.4);
+  background:rgba(12,10,26,.5);
+  color:var(--gold);
+  font-size:1.15rem;
+  line-height:1;
+  cursor:pointer;
+  display:grid;place-items:center;
+  transition:background .25s ease, border-color .25s ease, opacity .25s ease;
+  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+}
+.controls button:hover:not(:disabled){background:rgba(233,196,137,.16)}
+.controls button:disabled{opacity:.28;cursor:default}
+.counter{
+  font-size:.85rem;
+  letter-spacing:.16em;
+  min-width:5.5ch;
+  text-align:center;
+  font-variant-numeric:tabular-nums;
+}
+
+/* ============================================================
+   6. REDUCED MOTION
+   ============================================================ */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:.001ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.001ms !important;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ============================================================
+     THE LANDSCAPE BEHIND THE BOOK
+
+     It's one drawing on a 1200 x 700 grid. 0,0 is the top-left corner,
+     1200,700 the bottom-right. The heights worth knowing:
+
+        y 470–490    crest of the back hills
+        y 545–600    crest of the middle hills
+        y 640–680    crest of the front hill
+        y 700        bottom of the picture
+
+     Order matters. Anything written ABOVE a hill's <path> line is hidden
+     behind that hill; anything below it stands in front.
+
+     TO SWAP ANY PLANT OR ANIMAL FOR A DIFFERENT PICTURE
+     Every single thing in this scene is one line, like:
+
+        <image href="images/tree.png" x="588" y="558" width="80" height="98"
+               filter="url(#tintD)"/>
+
+     Careful: x,y is the TOP-LEFT corner of the picture, not the base. To
+     stand something with its feet at ground point (X, Y):
+
+           x = X - width/2          y = Y - height
+
+     Pick a height that looks right, then set the width to keep your own
+     picture's proportions. Delete a line to remove that plant; copy one and
+     change the numbers to add another.
+
+     tintA to tintG flatten a picture to one flat colour so it reads at the
+     right distance - each has its hex written beside it below. Leave the
+     filter attribute off entirely to keep a picture's own colours.
+     ============================================================ -->
+<div class="backdrop" aria-hidden="true"><svg class="scene" viewBox="0 0 1200 700" preserveAspectRatio="xMidYMax meet" aria-hidden="true" focusable="false">
+    <defs>
+      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0"   stop-color="#0C1230"/>
+        <stop offset=".34" stop-color="#2B2559"/>
+        <stop offset=".55" stop-color="#6A4179"/>
+        <stop offset=".66" stop-color="#C4665F"/>
+        <stop offset=".73" stop-color="#F0A45E"/>
+        <stop offset="1"   stop-color="#FBD08A"/>
+      </linearGradient>
+      <radialGradient id="sun">
+        <stop offset="0"   stop-color="#FFEFCC"/>
+        <stop offset=".55" stop-color="#FBBE6C"/>
+        <stop offset="1"   stop-color="#F19450"/>
+      </radialGradient>
+      <filter id="tintA" color-interpolation-filters="sRGB">
+        <feColorMatrix type="matrix" values="0 0 0 0 .44  0 0 0 0 .31  0 0 0 0 .52  0 0 0 .92 0"/>
+      </filter>
+      <filter id="tintB" color-interpolation-filters="sRGB">
+        <feColorMatrix type="matrix" values="0 0 0 0 .36  0 0 0 0 .25  0 0 0 0 .44  0 0 0 1 0"/>
+      </filter>
+      <filter id="tintC" color-interpolation-filters="sRGB">
+        <feColorMatrix type="matrix" values="0 0 0 0 .20  0 0 0 0 .14  0 0 0 0 .30  0 0 0 1 0"/>
+      </filter>
+      <filter id="tintD" color-interpolation-filters="sRGB">
+        <feColorMatrix type="matrix" values="0 0 0 0 .04  0 0 0 0 .03  0 0 0 0 .07  0 0 0 1 0"/>
+      </filter>
+      <!-- Each tint flattens a picture to one flat colour, so it sits at the
+           right distance. The three numbers are red, green and blue as
+           fractions of 1 (hex value divided by 255). -->
+      <filter id="tintE" color-interpolation-filters="sRGB">   <!-- #3B2650, far hills -->
+        <feColorMatrix type="matrix" values="0 0 0 0 .231  0 0 0 0 .149  0 0 0 0 .314  0 0 0 1 0"/>
+      </filter>
+      <filter id="tintF" color-interpolation-filters="sRGB">   <!-- #1C1228, middle hills -->
+        <feColorMatrix type="matrix" values="0 0 0 0 .110  0 0 0 0 .071  0 0 0 0 .157  0 0 0 1 0"/>
+      </filter>
+      <filter id="tintG" color-interpolation-filters="sRGB">   <!-- #07050C, right at the front -->
+        <feColorMatrix type="matrix" values="0 0 0 0 .027  0 0 0 0 .020  0 0 0 0 .047  0 0 0 1 0"/>
+      </filter>
+      <radialGradient id="glow">
+        <stop offset="0" stop-color="#F7A85C" stop-opacity=".5"/>
+        <stop offset="1" stop-color="#F7A85C" stop-opacity="0"/>
+      </radialGradient>
+    </defs>
+
+    <rect width="1200" height="700" fill="url(#sky)"/>
+
+    <!-- stars -->
+    <g fill="#FFF1D8">
+      <circle class="star" cx="80"  cy="60"  r="1.6" style="--t:4.2s;--td:.2s"/>
+      <circle class="star" cx="190" cy="120" r="1.2" style="--t:5.1s;--td:1.4s"/>
+      <circle class="star" cx="300" cy="48"  r="1.8" style="--t:3.6s;--td:.8s"/>
+      <circle class="star" cx="410" cy="150" r="1.1" style="--t:4.8s;--td:2.1s"/>
+      <circle class="star" cx="520" cy="70"  r="1.5" style="--t:5.4s;--td:.5s"/>
+      <circle class="star" cx="640" cy="130" r="1.3" style="--t:4.1s;--td:1.9s"/>
+      <circle class="star" cx="735" cy="40"  r="1.7" style="--t:3.9s;--td:1.1s"/>
+      <circle class="star" cx="860" cy="105" r="1.2" style="--t:5.6s;--td:.3s"/>
+      <circle class="star" cx="960" cy="58"  r="1.5" style="--t:4.4s;--td:2.4s"/>
+      <circle class="star" cx="1080" cy="132" r="1.3" style="--t:5.0s;--td:1.6s"/>
+      <circle class="star" cx="1150" cy="66" r="1.6" style="--t:3.8s;--td:.9s"/>
+      <circle class="star" cx="120" cy="205" r="1.1" style="--t:5.2s;--td:2.8s"/>
+      <circle class="star" cx="360" cy="230" r="1.2" style="--t:4.6s;--td:.6s"/>
+      <circle class="star" cx="600" cy="212" r="1.0" style="--t:5.8s;--td:1.7s"/>
+      <circle class="star" cx="820" cy="238" r="1.2" style="--t:4.0s;--td:2.2s"/>
+      <circle class="star" cx="1020" cy="196" r="1.4" style="--t:4.9s;--td:1.2s"/>
+      <circle class="star" cx="250" cy="300" r="1.0" style="--t:5.5s;--td:.4s"/>
+      <circle class="star" cx="700" cy="318" r="1.0" style="--t:4.3s;--td:2.6s"/>
+    </g>
+
+    <!-- sun -->
+    <circle cx="880" cy="452" r="300" fill="url(#glow)"/>
+    <circle cx="880" cy="452" r="92" fill="url(#sun)"/>
+
+    <!-- cloud bands drifting across the sun -->
+    <g fill="#8A4A6B" opacity=".38">
+      <ellipse class="cloud" cx="-100" cy="392" rx="150" ry="9"  style="animation-duration:120s"/>
+      <ellipse class="cloud" cx="-100" cy="428" rx="200" ry="7"  style="animation-duration:95s;animation-delay:-30s"/>
+      <ellipse class="cloud" cx="-100" cy="462" rx="120" ry="6"  style="animation-duration:140s;animation-delay:-70s"/>
+    </g>
+
+    <!-- the herd, walking behind the far ridge -->
+    <g transform="translate(-320 452)">
+      <g class="walk" style="--cross:104s;--dist:1750px;animation-delay:-58s">
+        <g class="lumber" style="--gait:3.1s">
+          <image href="images/ankylosaurus.png" width="118" height="34.2" filter="url(#tintA)"/>
+        </g>
+      </g>
+    </g>
+    <g transform="translate(-300 440)">
+      <g class="walk" style="--cross:86s;--dist:1800px;animation-delay:-26s">
+        <g class="lumber" style="--gait:2.7s">
+          <image href="images/rex.png" width="168" height="48.7" filter="url(#tintB)"/>
+        </g>
+      </g>
+    </g>
+
+    <!-- far ridge -->
+    <path fill="var(--ridge-far)" d="M0 700 L0 486 C 150 444 250 506 400 474 C 560 440 660 504 820 470 C 960 442 1080 492 1200 464 L1200 700 Z"/>
+
+
+    <!-- distant treeline on the far ridge -->
+    <g>
+      <image href="images/tree.png" x="60.0" y="442.6" width="24.1" height="29.4" filter="url(#tintE)"/>
+      <image href="images/tree.png" x="108.4" y="454.5" width="19.2" height="23.5" filter="url(#tintE)"/>
+      <image href="images/tree.png" x="250.8" y="464.6" width="22.4" height="27.4" filter="url(#tintE)"/>
+      <image href="images/tree.png" x="397.6" y="452.5" width="20.9" height="25.5" filter="url(#tintE)"/>
+      <image href="images/tree.png" x="553.1" y="424.6" width="25.7" height="31.4" filter="url(#tintE)"/>
+      <image href="images/tree.png" x="602.4" y="438.5" width="19.2" height="23.5" filter="url(#tintE)"/>
+      <image href="images/tree.png" x="700.8" y="464.6" width="22.4" height="27.4" filter="url(#tintE)"/>
+      <image href="images/tree.png" x="872.0" y="436.6" width="24.1" height="29.4" filter="url(#tintE)"/>
+      <image href="images/tree.png" x="1047.5" y="458.5" width="20.9" height="25.5" filter="url(#tintE)"/>
+      <image href="images/tree.png" x="1172.8" y="442.6" width="22.4" height="27.4" filter="url(#tintE)"/>
+    </g>
+
+    <!-- one closer, behind the middle ridge -->
+    <g transform="translate(1520 486) scale(-1 1)">
+      <g class="walk" style="--cross:58s;--dist:1900px;animation-delay:-24s">
+        <g class="lumber" style="--gait:2.3s">
+          <image href="images/ankylosaurus.png" width="262" height="76.0" filter="url(#tintC)"/>
+        </g>
+      </g>
+    </g>
+
+    <!-- mid ridge -->
+    <path fill="var(--ridge-mid)" d="M0 700 L0 578 C 180 548 320 604 470 572 C 640 538 760 598 920 568 C 1050 544 1130 582 1200 568 L1200 700 Z"/>
+
+
+    <!-- umbrella pines on the middle ridge -->
+    <g>
+      <image href="images/tree.png" x="62.8" y="511.2" width="46.5" height="56.8" filter="url(#tintF)"/>
+      <image href="images/tree.png" x="112.8" y="527.0" width="38.5" height="47.0" filter="url(#tintF)"/>
+      <image href="images/tree.png" x="296.4" y="541.1" width="43.3" height="52.9" filter="url(#tintF)"/>
+      <image href="images/grass.png" x="343.6" y="564.4" width="32.9" height="33.6" filter="url(#tintF)"/>
+      <image href="images/tree.png" x="666.0" y="497.2" width="48.1" height="58.8" filter="url(#tintF)"/>
+      <image href="images/tree.png" x="723.5" y="516.9" width="36.9" height="45.1" filter="url(#tintF)"/>
+      <image href="images/grass.png" x="945.6" y="524.4" width="40.8" height="41.6" filter="url(#tintF)"/>
+      <image href="images/tree.png" x="988.8" y="513.2" width="46.5" height="56.8" filter="url(#tintF)"/>
+      <image href="images/tree.png" x="1118.3" y="534.9" width="35.3" height="43.1" filter="url(#tintF)"/>
+    </g>
+
+    <!-- near ridge -->
+    <path fill="var(--ridge-near)" d="M0 700 L0 668 C 200 642 340 682 520 662 C 700 642 840 680 1010 660 C 1110 648 1160 664 1200 658 L1200 700 Z"/>
+
+
+    <!-- closer trees on the near ridge -->
+    <g>
+      <image href="images/tree.png" x="61.9" y="563.1" width="84.2" height="102.9" filter="url(#tintD)"/>
+      <image href="images/grass.png" x="137.4" y="609.6" width="61.2" height="62.4" filter="url(#tintD)"/>
+      <image href="images/tree.png" x="355.1" y="587.8" width="73.8" height="90.2" filter="url(#tintD)"/>
+      <image href="images/tree.png" x="581.9" y="545.3" width="92.2" height="112.7" filter="url(#tintD)"/>
+      <image href="images/grass.png" x="648.5" y="608.0" width="54.9" height="56.0" filter="url(#tintD)"/>
+      <image href="images/tree.png" x="872.8" y="583.8" width="70.5" height="86.2" filter="url(#tintD)"/>
+      <image href="images/tree.png" x="1051.9" y="562.0" width="80.2" height="98.0" filter="url(#tintD)"/>
+    </g>
+
+    <!-- nearest of all, in front of the last ridge -->
+    <g transform="translate(-280 628)">
+      <g class="walk" style="--cross:46s;--dist:1800px;animation-delay:-14s">
+        <g class="lumber" style="--gait:1.9s">
+          <image href="images/ankylosaurus.png" width="196" height="56.8" filter="url(#tintD)"/>
+        </g>
+      </g>
+    </g>
+
+    <!-- the grass at the very front. The outer <g> puts each clump in place;
+         the inner one carries the sway, because a CSS transform would wipe out
+         a transform attribute on the same element. -->
+    <g>
+      <g transform="translate(44 702) scale(1.15 1.15)"><g class="frond" style="--sd:0s"><image href="images/grass.png" x="-73.5" y="-150.0" width="147.1" height="150.0" filter="url(#tintG)"/></g></g>
+      <g transform="translate(148 706) scale(0.72 0.72)"><g class="frond" style="--sd:1.1s"><image href="images/grass.png" x="-73.5" y="-150.0" width="147.1" height="150.0" filter="url(#tintG)"/></g></g>
+      <g transform="translate(1164 702) scale(-1.2 1.2)"><g class="frond" style="--sd:1.7s"><image href="images/grass.png" x="-73.5" y="-150.0" width="147.1" height="150.0" filter="url(#tintG)"/></g></g>
+      <g transform="translate(1052 706) scale(-0.78 0.78)"><g class="frond" style="--sd:2.5s"><image href="images/grass.png" x="-73.5" y="-150.0" width="147.1" height="150.0" filter="url(#tintG)"/></g></g>
+    </g>
+  </svg></div>
+<div class="scrim" aria-hidden="true"></div>
+
+<main class="stage" id="stage">
+  <div class="deck">
+
+    <div class="book" id="book">
+
+      <!-- ════════ PAGE 1 — the cover ════════ -->
+      <div class="leaf">
+        <div class="face front cover">
+          <div class="pad">
+            <img class="crest" src="images/ankylosaurus.png" alt="">
+            <p class="kicker">Happy birthday,</p>
+            <h1 class="cover-name">Gracie</h1>
+            <p class="cover-sub">To the love of my life <3 </p>
+          </div>
+          <p class="turn-hint">turn the page</p>
+        </div>
+        <div class="face back"></div>
+      </div>
+
+      <!-- ════════ PAGE 2 — the letter, first half ════════ -->
+      <div class="leaf">
+        <div class="face front">
+          <div class="pad prose">
+            <p class="salutation">Dear Gracie,</p>
+
+            <!-- ══════════════════════════════════════════════
+                 ✏️  YOUR LETTER STARTS HERE
+                 Replace these paragraphs with your own words.
+                 Keep each one wrapped in <p> ... </p> tags.
+                 If it runs past the bottom of the page, move
+                 the rest onto page 3 below.
+                 ══════════════════════════════════════════════ -->
+
+            <p>I made this website for your birthday to commemorate the big DOUBLE TWO! 
+              I love you so much and I am so ecstatic I can be a part of this huge milestone. 
+              Getting older is always a little taunting, but it also means that it’s just one more day spent with you. 
+              I have thought about all the beautiful things that I’ve lived through in my life, and you are the first 
+              thing that pops up in my head. You are the sweetest, funniest, and mesmerizing soul that’s ever walked on this Earth; 
+              even more jaw dropping than all the dinosaurs that have ever roamed.
+            </p>
+
+          </div>
+          <p class="folio">2</p>
+        </div>
+        <div class="face back"></div>
+      </div>
+
+      <!-- ════════ PAGE 3 — the letter, second half ════════
+           Don't need a second page? Delete this whole <div class="leaf"> block. -->
+      <div class="leaf">
+        <div class="face front">
+          <div class="pad prose">
+
+            <p>My memories of you have been so fond, and it makes me happy 
+              that even the arguments we do get into are so trivial. I can’t wait 
+              to get into more stupid arguments and I hope you have such a Jurassic birthday!
+            </p>
+
+            <!-- ══════════════════════════════════════════════
+                 ✏️  YOUR LETTER ENDS HERE
+                 ══════════════════════════════════════════════ -->
+
+            <p class="signoff">
+              All my love,<br>
+              Oscar Cheng
+              <svg class="rule" viewBox="0 0 96 8" aria-hidden="true">
+                <path d="M2 5 C 18 1 26 7 42 4 C 58 1 70 7 94 3"/>
+              </svg>
+            </p>
+          </div>
+          <p class="folio">3</p>
+        </div>
+        <div class="face back"></div>
+      </div>
+
+      <!-- ════════ PAGES 4–9 — the photos ════════
+           Put your pictures in the "images" folder next to this file and name
+           them photo-1.jpg … photo-6.jpg. Change the captions below each one.
+           To add another photo page, copy a whole <div class="leaf"> block. -->
+
+      <div class="leaf">
+        <div class="face front">
+          <div class="pad photo-page">
+            <div class="mount"><div class="shot">
+              <img src="images/photo-1.jpg" alt="A photo of us">
+              <span class="hint"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3 7.2 5H4a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-3.2L15 3H9Zm3 5.5A4.5 4.5 0 1 1 7.5 13 4.5 4.5 0 0 1 12 8.5Zm0 2A2.5 2.5 0 1 0 14.5 13 2.5 2.5 0 0 0 12 10.5Z"/></svg><code>images/photo-1.jpg</code></span>
+            </div></div>
+            <p class="caption">Our First Date</p>
+          </div>
+          <p class="folio">4</p>
+        </div>
+        <div class="face back"></div>
+      </div>
+
+      <div class="leaf">
+        <div class="face front">
+          <div class="pad photo-page">
+            <div class="mount"><div class="shot">
+              <img src="images/photo-2.jpg" alt="A photo of us">
+              <span class="hint"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3 7.2 5H4a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-3.2L15 3H9Zm3 5.5A4.5 4.5 0 1 1 7.5 13 4.5 4.5 0 0 1 12 8.5Zm0 2A2.5 2.5 0 1 0 14.5 13 2.5 2.5 0 0 0 12 10.5Z"/></svg><code>images/photo-2.jpg</code></span>
+            </div></div>
+            <p class="caption">CHICKEN JOCKEY</p>
+          </div>
+          <p class="folio">5</p>
+        </div>
+        <div class="face back"></div>
+      </div>
+
+      <div class="leaf">
+        <div class="face front">
+          <div class="pad photo-page">
+            <div class="mount"><div class="shot">
+              <img src="images/photo-3.jpg" alt="A photo of us">
+              <span class="hint"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3 7.2 5H4a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-3.2L15 3H9Zm3 5.5A4.5 4.5 0 1 1 7.5 13 4.5 4.5 0 0 1 12 8.5Zm0 2A2.5 2.5 0 1 0 14.5 13 2.5 2.5 0 0 0 12 10.5Z"/></svg><code>images/photo-3.jpg</code></span>
+            </div></div>
+            <p class="caption">First Photoshoot</p>
+          </div>
+          <p class="folio">6</p>
+        </div>
+        <div class="face back"></div>
+      </div>
+
+      <div class="leaf">
+        <div class="face front">
+          <div class="pad photo-page">
+            <div class="mount"><div class="shot">
+              <img src="images/photo-4.jpg" alt="A photo of us">
+              <span class="hint"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3 7.2 5H4a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-3.2L15 3H9Zm3 5.5A4.5 4.5 0 1 1 7.5 13 4.5 4.5 0 0 1 12 8.5Zm0 2A2.5 2.5 0 1 0 14.5 13 2.5 2.5 0 0 0 12 10.5Z"/></svg><code>images/photo-4.jpg</code></span>
+            </div></div>
+            <p class="caption">E-Girl and Discord Mod</p>
+          </div>
+          <p class="folio">7</p>
+        </div>
+        <div class="face back"></div>
+      </div>
+
+      <div class="leaf">
+        <div class="face front">
+          <div class="pad photo-page">
+            <div class="mount"><div class="shot">
+              <img src="images/photo-5.jpg" alt="A photo of us">
+              <span class="hint"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3 7.2 5H4a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-3.2L15 3H9Zm3 5.5A4.5 4.5 0 1 1 7.5 13 4.5 4.5 0 0 1 12 8.5Zm0 2A2.5 2.5 0 1 0 14.5 13 2.5 2.5 0 0 0 12 10.5Z"/></svg><code>images/photo-5.jpg</code></span>
+            </div></div>
+            <p class="caption">When I Asked You To Be My Girlfriend</p>
+          </div>
+          <p class="folio">8</p>
+        </div>
+        <div class="face back"></div>
+      </div>
+
+      <div class="leaf">
+        <div class="face front">
+          <div class="pad photo-page">
+            <div class="mount"><div class="shot">
+              <img src="images/photo-6.jpg" alt="A photo of us">
+              <span class="hint"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3 7.2 5H4a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-3.2L15 3H9Zm3 5.5A4.5 4.5 0 1 1 7.5 13 4.5 4.5 0 0 1 12 8.5Zm0 2A2.5 2.5 0 1 0 14.5 13 2.5 2.5 0 0 0 12 10.5Z"/></svg><code>images/photo-6.jpg</code></span>
+            </div></div>
+            <p class="caption">Valentines 3 Minutes Away</p>
+          </div>
+          <p class="folio">9</p>
+        </div>
+        <div class="face back"></div>
+      </div>
+
+      <!-- ════════ PAGE 10 — the last page ════════ -->
+      <div class="leaf">
+        <div class="face front">
+          <div class="pad closing">
+            <img class="doodle" src="images/ankylosaurus.png" alt="">
+            <p class="last-line">Happy 22nd My Love, I Love You So Much</p>
+            <p class="signoff">Your Boog</p>
+          </div>
+          <p class="folio">10</p>
+        </div>
+        <div class="face back"></div>
+      </div>
+
+    </div><!-- /book -->
+
+    <nav class="controls">
+      <button type="button" id="prev" aria-label="Previous page">&#8249;</button>
+      <span class="counter" id="counter" aria-live="polite">1 / 10</span>
+      <button type="button" id="next" aria-label="Next page">&#8250;</button>
+    </nav>
+
+  </div><!-- /deck -->
+</main>
+
+<script>
+/* ============================================================
+   PAGE TURNING
+   ============================================================ */
+(function () {
+  var stage   = document.getElementById("stage");
+  var book    = document.getElementById("book");
+  var leaves  = Array.prototype.slice.call(book.querySelectorAll(".leaf"));
+  var counter = document.getElementById("counter");
+  var prevBtn = document.getElementById("prev");
+  var nextBtn = document.getElementById("next");
+  var total   = leaves.length;
+  var page    = 0;                       // how many leaves are turned
+
+  function render() {
+    leaves.forEach(function (leaf, i) {
+      var turned = i < page;
+      leaf.classList.toggle("turned", turned);
+      leaf.style.zIndex = turned ? i + 1 : 500 - i;
+      if ("inert" in leaf) leaf.inert = (i !== page);
+      leaf.setAttribute("aria-hidden", i === page ? "false" : "true");
+    });
+    stage.classList.toggle("open", page > 0);
+    counter.textContent = (page + 1) + " / " + total;
+    prevBtn.disabled = page === 0;
+    nextBtn.disabled = page === total - 1;
+  }
+
+  function go(target) {
+    target = Math.max(0, Math.min(total - 1, target));
+    if (target === page) return;
+    var moving = target > page ? leaves[page] : leaves[target];
+    page = target;
+    render();
+    moving.style.zIndex = 999;           // keep the turning page on top
+    clearTimeout(moving._restore);
+    moving._restore = setTimeout(render, 950);
+  }
+
+  nextBtn.addEventListener("click", function () { go(page + 1); });
+  prevBtn.addEventListener("click", function () { go(page - 1); });
+
+  /* click the page itself: right side forward, left-hand page back */
+  stage.addEventListener("click", function (e) {
+    if (e.target.closest(".controls")) return;      // the buttons handle themselves
+    if (String(window.getSelection())) return;      // don't turn mid text-selection
+    var box = book.getBoundingClientRect();
+    if (e.clientY < box.top || e.clientY > box.bottom) return;
+    if (e.clientX >= box.left && e.clientX <= box.right) {
+      go(e.clientX > box.left + box.width * 0.14 ? page + 1 : page - 1);
+    } else if (e.clientX < box.left && e.clientX > box.left - box.width) {
+      go(page - 1);                                 // the turned pages on the left
+    }
+  });
+
+  /* keyboard */
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "ArrowRight" || e.key === "PageDown") { go(page + 1); }
+    if (e.key === "ArrowLeft"  || e.key === "PageUp")   { go(page - 1); }
+  });
+
+  /* swipe */
+  var startX = null, startY = null;
+  book.addEventListener("touchstart", function (e) {
+    startX = e.changedTouches[0].clientX;
+    startY = e.changedTouches[0].clientY;
+  }, { passive: true });
+  book.addEventListener("touchend", function (e) {
+    if (startX === null) return;
+    var dx = e.changedTouches[0].clientX - startX;
+    var dy = e.changedTouches[0].clientY - startY;
+    if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy)) {
+      go(dx < 0 ? page + 1 : page - 1);
+    }
+    startX = startY = null;
+  }, { passive: true });
+
+  render();
+})();
+
+/* ============================================================
+   PHOTO PLACEHOLDERS
+   If a picture isn't in the images folder yet, the frame says
+   which file it's waiting for instead of showing a broken image.
+   ============================================================ */
+document.querySelectorAll(".shot img").forEach(function (img) {
+  function markEmpty() {
+    img.closest(".shot").classList.add("is-empty");
+    img.style.display = "none";
+  }
+  img.addEventListener("error", markEmpty);
+  if (img.complete && img.naturalWidth === 0) markEmpty();
+});
+</script>
+
+</body>
+</html>
